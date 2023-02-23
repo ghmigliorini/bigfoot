@@ -32,8 +32,7 @@ big_summ <- bigfoot %>%
     classification
     ) %>%
   summarise(
-    date = sum(year(date) >= 1950),
-    N = n(),
+    N_obs = n(),
     temp_high = mean(temperature_high),
     temp_mid = mean(temperature_mid),
     temp_low = mean(temperature_low),
@@ -72,3 +71,47 @@ graph2 <- function(data, x_var, y_var) {
     theme_minimal(12)
 }
 
+
+# table 1 -----------------------------------------------------------------
+
+table <- function(data) {
+  data %>%
+  group_by(state, county) %>%
+  summarise(
+    total = sum(N_obs),
+    .groups = "drop") %>%
+  reactable::reactable(
+    groupBy = "state",
+    columns = list(
+      state = reactable::colDef("State"),
+      county = reactable::colDef("County"),
+      total = reactable::colDef("Observations", aggregate = "sum")
+    )
+  )
+}
+
+
+# Map ---------------------------------------------------------------------
+
+
+map_bigfoot <- function(data) {
+  data %>%
+    filter(!state == "Alaska") %>%
+    group_by(county) %>%
+    summarise(
+      across(c(lat, lon), first),
+      n = sum(N_obs),
+      .groups = "drop"
+    ) %>%
+    mutate(lab = paste0(county, ": ", n)) %>%
+    leaflet::leaflet() %>%
+    leaflet::addTiles() %>%
+    leaflet::addCircles(
+      lat = ~lat,
+      lng = ~lon,
+      weight = 1.5,
+      radius = ~n * 1000,
+      color = "#67001f",
+      popup = ~lab
+    )
+}
