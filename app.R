@@ -1,7 +1,7 @@
 library(shiny)
 
 
-
+source('app_data.R')
 source('app_funs.R')
 
 
@@ -9,21 +9,21 @@ source('app_funs.R')
 # Shiny -------------------------------------------------------------------
 
 ui <- fluidPage(
+  titlePanel("Bigfoot Sightings in USA"),
   fluidRow(
     column(
-      width = 6,
-      tags$h2("Bigfoot Sightings in USA")
+      width = 6
     )
   ),
   fluidRow(
     column(
       width = 6,
-      plotOutput("grafico")
+      reactable::reactableOutput("tabela")
     ),
     column(
       width = 6,
-      leaflet::leafletOutput("mapa"),
-      reactable::reactableOutput("tabela")
+      highcharter::highchartOutput("grafico"),
+      leaflet::leafletOutput("mapa")
     )
   )
 
@@ -32,7 +32,7 @@ ui <- fluidPage(
 server <- function(input, output, session) {
 
   output$grafico <- highcharter::renderHighchart({
-    graph2(bf_data, Year, N_obs)
+    graph2(bf_data)
   })
 
   output$mapa <- leaflet::renderLeaflet({

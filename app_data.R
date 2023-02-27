@@ -18,6 +18,10 @@ dplyr::glimpse(bigfoot)
 # Summary -----------------------------------------------------------------
 
 bf_data <- bigfoot %>%
+  dplyr::filter(
+    !state == "Alaska"
+    & year(date) >= 1950
+  ) %>%
   dplyr::group_by(
     state,
     county,
@@ -40,3 +44,4 @@ bf_data <- bigfoot %>%
     wind = mean(wind_speed),
     .groups = "drop"
   )
+
