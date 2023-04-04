@@ -1,3 +1,5 @@
+library(magrittr)
+library(lubridate)
 library(shiny)
 
 
@@ -9,21 +11,34 @@ source('app_funs.R')
 # Shiny -------------------------------------------------------------------
 
 ui <- fluidPage(
+  tags$head(
+    tags$style(HTML("
+                    .subtitle {
+                    font-size: 16px;
+                    color: #666;
+                    margin-bottom: 10px;
+                    }
+                    .content {
+                    margin-top: 10px;
+                    }
+                    "))
+    ),
   titlePanel("Bigfoot Sightings in USA"),
+  div("A Dataset of Reported Sightings from 1950 to 2021", class = "subtitle"),
   fluidRow(
     column(
       width = 6
-    )
-  ),
+      )
+    ),
   fluidRow(
     column(
       width = 6,
-      reactable::reactableOutput("tabela")
-    ),
+      reactable::reactableOutput("tabela", height = "840px")
+      ),
     column(
       width = 6,
-      highcharter::highchartOutput("grafico"),
-      leaflet::leafletOutput("mapa")
+      highcharter::highchartOutput("grafico", height = "420px"),
+      leaflet::leafletOutput("mapa", height = "420px")
     )
   )
 

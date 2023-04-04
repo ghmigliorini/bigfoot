@@ -1,25 +1,21 @@
-library(lubridate)
-
-
 
 # plot 1 ------------------------------------------------------------------
 
 graph1 <- function(data) {
   data %>%
     dplyr::group_by(
-      state,
-      classification
+      state
       ) %>%
     dplyr::summarise(
       N = sum(N_obs),
       .groups = "drop"
       ) %>%
+    dplyr::arrange(desc(N)) %>%
     highcharter::hchart(
       type = "bar",
       highcharter::hcaes(
         x = state,
-        y = N,
-        group = classification
+        y = N
       )
     )
 
